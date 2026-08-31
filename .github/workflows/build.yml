@@ -3,13 +3,10 @@ on: workflow_dispatch
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: windows-2019
+    
     steps:
-      - name: Get Source
-        run: |
-          Invoke-WebRequest -Uri "https://raw.githubusercontent.com/${{ github.repository }}/main/Main.cpp" -OutFile "Main.cpp"
-          dir
-        shell: pwsh
+      - uses: actions/checkout@v3
       
       - name: Install MinGW
         run: choco install mingw -y
@@ -19,8 +16,7 @@ jobs:
         run: g++ -static -o CashBookPro.exe Main.cpp -lgdi32 -lcomctl32 -luser32 -lkernel32 -mwindows -std=c++11 -O2 -s
         shell: cmd
       
-      - name: Upload
-        uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v4
         with:
           name: CashBookPro
           path: CashBookPro.exe
