@@ -1,22 +1,16 @@
-name: Build CashBook Pro
+name: Build
 on: workflow_dispatch
 
 jobs:
   build:
-    runs-on: windows-2019
-    
+    runs-on: ubuntu-22.04
     steps:
       - uses: actions/checkout@v3
-      
-      - name: Install MinGW
-        run: choco install mingw -y
-        shell: pwsh
-      
-      - name: Compile
-        run: g++ -static -o CashBookPro.exe Main.cpp -lgdi32 -lcomctl32 -luser32 -lkernel32 -mwindows -std=c++11 -O2 -s
-        shell: cmd
-      
+      - name: Build
+        run: |
+          sudo apt-get install -y g++-mingw-w64-x86-64
+          x86_64-w64-mingw32-g++ -static -o app.exe Main.cpp -lgdi32 -lcomctl32 -luser32 -lkernel32 -mwindows -std=c++11
       - uses: actions/upload-artifact@v4
         with:
-          name: CashBookPro
-          path: CashBookPro.exe
+          name: app
+          path: app.exe
