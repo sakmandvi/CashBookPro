@@ -2,18 +2,27 @@ name: Build CashBook Pro
 on:
   workflow_dispatch:
   push:
+
 jobs:
   build:
-    runs-on: windows-2022
+    runs-on: ubuntu-latest
+    
     steps:
-      - uses: actions/checkout@v4
-      - name: Install MinGW
-        run: choco install mingw -y
-        shell: pwsh
-      - name: Compile
-        run: g++ -static -o CashBookPro.exe Main.cpp -lgdi32 -lcomctl32 -luser32 -lkernel32 -mwindows -std=c++11 -O2 -s
-        shell: cmd
-      - uses: actions/upload-artifact@v4
-        with:
-          name: CashBookPro
-          path: CashBookPro.exe
+    - name: Checkout
+      uses: actions/checkout@v4
+    
+    - name: Install MinGW
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y g++-mingw-w64-x86-64
+        sudo update-alternatives --set x86_64-w64-mingw32-g++ /usr/bin/x86_64-w64-mingw32-g++-posix
+    
+    - name: Compile
+      run: |
+        x86_64-w64-mingw32-g++ -static -o CashBookPro.exe Main.cpp -lgdi32 -lcomctl32 -luser32 -lkernel32 -mwindows -std=c++11 -O2 -s
+    
+    - name: Upload
+      uses: actions/upload-artifact@v4
+      with:
+        name: CashBookPro
+        path: CashBookPro.exe
